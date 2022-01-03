@@ -1,0 +1,63 @@
+{
+  "name": "DOCKER_TEMPLATE_LAMBDA",
+  "version": "1.0.0",
+  "description": "TEMPLATE_DESCRIPTION",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "lint:fix": "tslint --fix --project tsconfig.json",
+    "pretest": "npm run lint",
+    "test": "jest",
+    "pre:build": "npm cit",
+    "all": "npm ci && npm run build && npm prune --production",
+    "build": "npm run pre:build && tsc",
+    "docker:build": "docker build . -t DOCKER_TAG",
+    "docker:start": "npm run lint:fix && npm run docker:build && docker run -e .env -p 9000:8080 DOCKER_TAG"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.19",
+    "@types/chai": "^4.1.7",
+    "@types/jest": "^27.4.0",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^11.9.3",
+    "jest": "^27.4.5",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-microsoft-contrib": "^6.0.0",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "moment": "^2.24.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "test",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(j|t)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "testEnvironment": "node"
+  }
+}

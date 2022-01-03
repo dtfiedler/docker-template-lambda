@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  variables:
+    ECR_REPO_NAME: 'ECR_REPO_NAME'
+    AWS_ACCOUNT_ID: 'AWS_ACCOUNT_ID'
+    AWS_REGION: 'us-east-1'
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+      - npm ci
+  build:
+    commands:
+      - GIT_HASH=$(git rev-parse --short HEAD)
+      - echo "Running Unit Tests!"
+      - npm run test
+      - echo "Building Docker Image"
+      - npm run docker:build
+      - echo "Pushing Docker Image to ECR"
+      - IMAGE_TAG=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
+      - docker build . -t $IMAGE_TAG --no-cache
+      - docker push $IMAGE_TAG
+      - aws lambda update-function-code --image-uri $IMAGE_TAG --function-name $ECR_REPO_NAME --region $AWS_REGION

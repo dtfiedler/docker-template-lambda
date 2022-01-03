@@ -1,0 +1,13 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Build dir
+dist
+node_modules
+false
+
+# Envs
+.env
